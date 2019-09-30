@@ -65,19 +65,41 @@ exports.update = (req, res) => {
   }*/
 
   // Find note and update it with the request body
+  
   Listing.findByIdAndUpdate(req.params.listingId, {
       code: req.body.code,
       address: req.body.address,
       name: req.body.name,
       coordinates: req.body.coordinates
-  }, {new: true})
+  })/*, {new: true})
   .then(listing => {
       if(!listing) {
           return res.status(404).send({
               message: "Note not found with id " + req.params.listingId
           });
       }
-      res.send(listing);
+      if(req.body.address && !req.body.coordinates){
+        setTimeout(function(){ 
+
+          console.log(req.results);
+          
+          listing.coordinates = {
+            latitude: req.results.lat,
+            longitude: req.results.lng
+          };
+          console.log(listing.coordinates);
+          res.send(listing);
+        }, 3000); 
+        
+        
+        //console.log(req.results);
+          
+      }
+      else{
+        res.send(listing);
+      }
+      
+      
   }).catch(err => {
       if(err.kind === 'ObjectId') {
           return res.status(404).send({
@@ -88,7 +110,7 @@ exports.update = (req, res) => {
           message: "Error updating note with id " + req.params.listingId
       });
   });
-};
+};*/
 
 /* Delete a listing */
 // Delete a note with the specified noteId in the request
